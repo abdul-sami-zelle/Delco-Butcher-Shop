@@ -61,9 +61,9 @@
 
 .product-info .name {
   color: var(--navy-blue);
-  font-weight: var(--fw-300);
+  font-weight: var(--fw-500);
   line-height: var(--lh-18);
-  font-size: var(--fs-16);
+  font-size: var(--fs-15);
   line-height: 120%;
   display: -webkit-box;
   -webkit-line-clamp: 2;

@@ -40,6 +40,28 @@ export async function getProductData() {
   }
 }
 
+
+
+export async function getCategories() {
+  try {
+    const res = await fetch(`https://api.delcofarmersmarket.com/api/v1/categories/get?department=68b5adf44ecbd3f008330c1a`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) throw new Error("Failed to fetch product data");
+
+    const data = await res.json();
+    return data?.data;
+  } catch (err) {
+    console.error("API Error:", err);
+    return null;
+  }
+}
+
 export async function getSalesProductData() {
   try {
     const res = await fetch(`${BASE_URL}/api/butcher-shop/landing-page/get-sale`, {

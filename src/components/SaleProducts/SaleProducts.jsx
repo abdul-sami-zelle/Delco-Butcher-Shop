@@ -15,7 +15,7 @@ import { CartContext } from "../../context/addToCart";
 import ProductDetailModal from "../ProductDetailModal/ProductDetailModal";
 import ProductCard from "../ProductCard/ProductCard";
 
-const SaleProducts = () => {
+const SaleProducts = ({ scrollToSection }) => {
   const [container, setContainer] = useState(null);
   const [sections, setSections] = useState([]);
   const [mounted, setMounted] = useState(false);
@@ -59,6 +59,24 @@ const SaleProducts = () => {
     setMounted(true);
   }, []);
 
+  const sectionRefs = useRef({});
+
+  useEffect(() => {
+    if (scrollToSection && sectionRefs.current[scrollToSection]) {
+      const element = sectionRefs.current[scrollToSection];
+      const headerHeight = 80; // <-- yahan apne header ki actual height px me set karo
+
+      const offsetTop = element.getBoundingClientRect().top + window.scrollY - headerHeight;
+
+      window.scrollTo({
+        top: offsetTop,
+        behavior: "smooth",
+      });
+    }
+  }, [scrollToSection]);
+
+
+
   const scrollRefs = useRef({});
 
   const scroll = (id, direction) => {
@@ -77,6 +95,7 @@ const SaleProducts = () => {
   };
 
   if (!mounted) return null;
+
 
   return (
     <div
@@ -101,7 +120,7 @@ const SaleProducts = () => {
           : [];
 
         return (
-          <div key={section?._id} className="sales-section">
+          <div key={section?._id} ref={(el) => (sectionRefs.current[section?.sec_name] = el)} className="sales-section">
             {index === 0 && (
               <div className="sales-top-banner">
                 <img src="/assets/Images/savings.png" alt="Savings" />
@@ -136,7 +155,7 @@ const SaleProducts = () => {
                   )}
 
 
-                  <div className={ sectionImage ? "sales-department-image-craousel partial" :"sales-department-image-craousel full"}>
+                  <div className={sectionImage ? "sales-department-image-craousel partial" : "sales-department-image-craousel full"}>
                     <div className="sales-carousel-wrapper">
                       <button
                         className="sales-arrow-btn left"
@@ -159,111 +178,7 @@ const SaleProducts = () => {
 
                             <div key={item?._id}>
                               <ProductCard product={item} allProducts={section?.products} />
-
                             </div>
-
-                            // <div
-                            //   className="sales-card"
-                            //   key={item._id}
-                            //   onClick={() => handleProductClick(item)}
-                            // >
-                            //   <div className="sales-Image">
-                            //     <img
-                            //       src={`${BASE_URL}${item?.image}`}
-                            //       alt={item.title}
-                            //     />
-                            //     <div className="add-btn-container">
-                            //       {!cartItem ? (
-                            //         loadingItems[item._id] ? (
-                            //           <div className="loader"></div>
-                            //         ) : (
-                            //           <button
-                            //             className="plus-btn"
-                            //             onClick={(e) => {
-                            //               e.stopPropagation();
-                            //               setLoadingItems((prev) => ({
-                            //                 ...prev,
-                            //                 [item._id]: true,
-                            //               }));
-
-                            //               setTimeout(() => {
-                            //                 addToCart(
-                            //                   {
-                            //                     ...item,
-                            //                     _id: item._id,
-                            //                     image: `${BASE_URL}${item?.image}`,
-                            //                   },
-                            //                   item.quantityInitial || 1
-                            //                 );
-                            //                 setShowSideCart(true);
-                            //                 setLoadingItems((prev) => {
-                            //                   const copy = { ...prev };
-                            //                   delete copy[item._id];
-                            //                   return copy;
-                            //                 });
-                            //               }, 800);
-                            //             }}
-                            //           >
-                            //             <IoAddOutline className="icon-white" />
-                            //           </button>
-                            //         )
-                            //       ) : (
-                            //         <div
-                            //           className="qty-control"
-                            //           id={`qty-${item._id}`}
-                            //         >
-                            //           <button
-                            //             onClick={(e) => {
-                            //               e.stopPropagation();
-                            //               if (
-                            //                 cartItem.quantity === item.quantityMin
-                            //               ) {
-                            //                 const control =
-                            //                   document.querySelector(
-                            //                     `#qty-${item._id}`
-                            //                   );
-                            //                 if (control) {
-                            //                   control.classList.add(
-                            //                     "collapse-anim"
-                            //                   );
-                            //                   setTimeout(() => {
-                            //                     removeFromCart(item._id);
-                            //                   }, 300);
-                            //                 }
-                            //               } else {
-                            //                 decreaseQuantity(item._id);
-                            //               }
-                            //             }}
-                            //           >
-                            //             {cartItem.quantity ===
-                            //             item.quantityMin ? (
-                            //               <AiOutlineDelete />
-                            //             ) : (
-                            //               <AiOutlineMinus />
-                            //             )}
-                            //           </button>
-                            //           <span>{cartItem.quantity}</span>
-
-                            //           <button
-                            //             onClick={(e) => {
-                            //               e.stopPropagation();
-                            //               increaseQuantity(item._id);
-                            //             }}
-                            //           >
-                            //             <MdAdd />
-                            //           </button>
-                            //         </div>
-                            //       )}
-                            //     </div>
-                            //   </div>
-                            //   <p className="product-price">
-                            //     <span className="currency">{item.currency}</span>
-                            //     <span className="price-int">{intPart}</span>
-                            //     <span className="price-dec">{decPart}</span>
-                            //   </p>
-
-                            //   <p className="product-name">{item.title}</p>
-                            // </div>
                           );
                         })}
                       </div>

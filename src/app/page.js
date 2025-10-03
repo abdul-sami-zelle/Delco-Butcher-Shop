@@ -14,9 +14,13 @@ import DepartmentCard from "../components/DepartmentCard/DepartmentCard";
 import HeroSection2 from "@/components/HeroSection2/HeroSection";
 import Departments2 from "@/components/Department2/departments";
 import FtBanner from "@/components/footerBanner/ftBanner";
+import MainSlider from "@/components/mainSlider/mainSlider";
 
 export default function Home() {
+
   const [saleBgColor, setSaleBgColor] = useState("");
+  const [scrollToSection, setScrollToSection] = useState(null);
+  const [scrollToSectionSale, setScrollToSectionSale] = useState(null);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -30,22 +34,19 @@ export default function Home() {
 
   return (
     <>
-      <Header />
+      <Header onDeptClick={(deptName) => setScrollToSection(deptName)} onDiscountClick={(dis) => setScrollToSectionSale(dis)} />
       <div className={`main-layout`}>
         <div className="main-content">
-          <HeroSection2/>
-          <Departments2/>
-          <div className="main-bg">
-            <Products />
-          </div>
+          <MainSlider />
+          <Products scrollToSection={scrollToSection} onClick={(deptName) => setScrollToSection(deptName)} />
           <div
             className="sale-product-container"
             style={{ backgroundColor: saleBgColor }}
           >
-            <SaleProducts />
+            <SaleProducts scrollToSection={scrollToSectionSale} />
           </div>
-          <FtBanner/>
-         
+          <FtBanner />
+
           <Footer />
         </div>
         <SideCart />

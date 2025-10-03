@@ -9,16 +9,18 @@ import { LiaTruckMovingSolid } from "react-icons/lia";
 import "./Header.css";
 import { CartContext } from "../../context/addToCart";
 import { IoMdArrowDropdown } from "react-icons/io";
-import { getLandingPageData } from "@/lib/api";
+import { getSalesProductData, getCategories } from "@/lib/api";
 import LocationModal from "../LocationModal/LocationModal";
 import DeliveryModal from "../DeliveryModal/DeliveryModal";
 
-export default function Header() {
+export default function Header({ onDeptClick, onDiscountClick }) {
   const [showModal, setShowModal] = useState(false);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showDelcoMenu, setShowDelcoMenu] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("Delco Farmers");
   const [departments, setDepartments] = useState([]);
+  const [trendDepartments, setTrendDepartments] = useState([]);
+  const [discounts, setDiscounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeModal, setActiveModal] = useState(null);
 
@@ -27,19 +29,6 @@ export default function Header() {
     "/assets/Images/2.jpg",
     "/assets/Images/3.jpg",
     "/assets/Images/4.jpg",
-  ];
-
-  const categories = [
-    "Produce",
-    "Dairy & Eggs",
-    "Meat & Seafood",
-    "Pantry",
-    "Beverages",
-    "Frozen",
-    "Snacks, Candy, Nuts, & Seeds",
-    "Baby",
-    "Beauty & Personal Care",
-    "Bulk Goods",
   ];
 
   const { showSideCart, setShowSideCart, cart } = useContext(CartContext);
@@ -100,16 +89,35 @@ export default function Header() {
     }
   }, [transition]);
 
+
+
   useEffect(() => {
     async function fetchData() {
       setLoading(true);
-      const data = await getLandingPageData();
-      if (data && data.featured_depts) {
-        setDepartments(data.featured_depts);
+      const data = await getCategories();
+      if (data) {
+        setDepartments(data);
+
+        // pick random departments
+        const count =
+          data.length <= 5 ? 2 : Math.floor(data.length / 2); // rule
+        const shuffled = [...data].sort(() => 0.5 - Math.random());
+        const randomSelected = shuffled.slice(0, count);
+
+        setTrendDepartments(randomSelected);
+      }
+      setLoading(false);
+    }
+    async function getDicounts() {
+      setLoading(true);
+      const data = await getSalesProductData();
+      if (data?.sales) {
+        setDiscounts(data?.sales);
       }
       setLoading(false);
     }
     fetchData();
+    getDicounts();
   }, []);
   return (
     <>
@@ -146,15 +154,15 @@ export default function Header() {
                 {showDelcoMenu && (
                   <div className="delco-menu">
                     <ul>
-                      {categories.map((item, i) => (
+                      {departments.map((item, i) => (
                         <li
                           key={i}
                           onClick={() => {
-                            setSelectedCategory(item);
+                            setSelectedCategory(item.name);
                             setShowDelcoMenu(false);
                           }}
                         >
-                          {item}
+                          {item.name}
                         </li>
                       ))}
                     </ul>
@@ -305,31 +313,24 @@ export default function Header() {
               </a>
               <div className="dropdown-menu">
                 <div className="explore-container">
-                  <div className="">
+                  <div className="" style={{flex:1}}>
                     <ul>
-                      <span>Groceries</span>
                       {departments.map((dept) => (
-                        <li key={dept._id}>
-                          <img
-                            src={`https://api.delcofarmersmarket.com${dept.image_2}`}
-                            alt={dept.name}
-                            className="department-name-with-images"
-                          />
+                        <li key={dept._id} onClick={() => {
+                          onDeptClick(dept._id);   // parent ko inform karega
+                        }}>
                           {dept.name}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  <div className="">
+                  <div className="" style={{flex:1}}>
                     <ul>
                       <span>Trending</span>
-                      {departments.map((dept) => (
-                        <li key={dept._id}>
-                          <img
-                            src={`https://api.delcofarmersmarket.com${dept.image_2}`}
-                            alt={dept.name}
-                            className="department-name-with-images"
-                          />
+                      {trendDepartments.map((dept) => (
+                        <li key={dept._id} onClick={() => {
+                          onDeptClick(dept._id);   // parent ko inform karega
+                        }}>
                           {dept.name}
                         </li>
                       ))}
@@ -344,11 +345,16 @@ export default function Header() {
                 Discounts <MdKeyboardArrowDown size={13} />
               </a>
               <div className="dropdown-menu">
+
                 <ul>
-                  <li>Featured Savings</li>
-                  <li>Markdown</li>
-                  <li>All Savings</li>
+                  {Array.isArray(discounts) &&
+                    discounts.map((dis) => (
+                      <li key={dis._id} onClick={() => onDiscountClick(dis.sec_name)}>
+                        {dis.sec_name}
+                      </li>
+                    ))}
                 </ul>
+
               </div>
             </div>
 
@@ -382,7 +388,7 @@ export default function Header() {
             <a href="#">Black Friday</a>
             <span style={{ color: "lightgray", fontSize: "20px" }}>|</span>
             <a href="#">Past Purchases</a>
-            <a href="#">Repeat Items</a>
+            {/* <a href="#">Repeat Items</a> */}
           </div>
 
           <div className="sub-header-right">
