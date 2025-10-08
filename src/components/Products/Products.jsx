@@ -141,7 +141,7 @@ const Products = ({ scrollToSection , onClick }) => {
                 <div className="products-header">
                   <span>{section.sec_name}</span>
                   <p>
-                    See more <FaChevronRight color="#2162a1" size={12} />
+                    See more <FaChevronRight  size={12} />
                   </p>
                 </div>
                 <span className="horizontal-line"></span>
@@ -161,7 +161,7 @@ const Products = ({ scrollToSection , onClick }) => {
                     {section.products.map((product) => {
                       const item = getCartItem(product._id);
                       return (
-                        <div key={product?._id}>
+                        <div key={product?._id} onClick={()=>{handleProductClick(product)}}>
                           <ProductCard product={product} allProducts={section?.products} />
 
                         </div>

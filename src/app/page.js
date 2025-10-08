@@ -17,7 +17,6 @@ import FtBanner from "@/components/footerBanner/ftBanner";
 import MainSlider from "@/components/mainSlider/mainSlider";
 
 export default function Home() {
-
   const [saleBgColor, setSaleBgColor] = useState("");
   const [scrollToSection, setScrollToSection] = useState(null);
   const [scrollToSectionSale, setScrollToSectionSale] = useState(null);
@@ -37,6 +36,7 @@ export default function Home() {
       <Header onDeptClick={(deptName) => setScrollToSection(deptName)} onDiscountClick={(dis) => setScrollToSectionSale(dis)} />
       <div className={`main-layout`}>
         <div className="main-content">
+          {/* <HeroSection2/> */}
           <MainSlider />
           <Products scrollToSection={scrollToSection} onClick={(deptName) => setScrollToSection(deptName)} />
           <div

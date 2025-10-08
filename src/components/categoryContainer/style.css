@@ -9,7 +9,7 @@
     text-decoration: none;
     transition: border, color .3s ease;
     cursor: pointer;
-    margin: 0 10px;
+    margin: 0 10px 0 0;
 }
 
 @media (min-width: 992px) {
@@ -42,10 +42,10 @@
     transition: all .3s ease;
 }
 
-.category_container:hover{
+.category_container:hover {
     border: 2px solid var(--peace);
 }
 
-.category_container:hover h2{
+.category_container:hover h2 {
     color: var(--peace);
 }
