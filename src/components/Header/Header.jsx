@@ -367,9 +367,12 @@ export default function Header({ onDeptClick, onDiscountClick }) {
                 <div
                   className="explore-container"
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", // responsive columns
-                    gap: "20px",
+                    display: departments.length < 10 ? "block" : "grid",
+                    gridTemplateColumns:
+                      departments.length < 10
+                        ? "none"
+                        : "repeat(auto-fill, minmax(200px, 1fr))", // grid only when 10+
+                    gap: departments.length < 10 ? "0" : "20px",
                     maxHeight: "600px",
                     overflowY: "auto",
                     paddingRight: "10px",
@@ -383,7 +386,15 @@ export default function Header({ onDeptClick, onDiscountClick }) {
                       return rows;
                     }, [])
                     .map((group, i) => (
-                      <ul key={i} style={{ listStyle: "none", padding: 0 }}>
+                      <ul
+                        key={i}
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: 0,
+                          width: departments.length < 10 ? "100%" : "auto", // full width when less than 10
+                        }}
+                      >
                         {group.map((dept) => (
                           <li
                             key={dept._id}
@@ -393,9 +404,9 @@ export default function Header({ onDeptClick, onDiscountClick }) {
                               alignItems: "center",
                               padding: "8px 12px",
                               cursor: "pointer",
-                              fontSize:"var(--fs-14)",
-                              fontWeight:"var(--fw-400)"
-                              // borderBottom: "1px solid #f0f0f0",
+                              fontSize: "var(--fs-14)",
+                              fontWeight: "var(--fw-400)",
+                              width: departments.length < 10 ? "100%" : "auto",
                             }}
                           >
                             <img
@@ -414,8 +425,8 @@ export default function Header({ onDeptClick, onDiscountClick }) {
                       </ul>
                     ))}
                 </div>
-
               </div>
+
             </div>
 
             <div className="dropdown">
